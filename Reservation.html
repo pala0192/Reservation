@@ -12,11 +12,48 @@
         .entry {
             margin: 5px 0;
         }
+        .delete-button {
+            margin-left: 10px;
+            color: red;
+            cursor: pointer;
+        }
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h1>Q.E.D 방탈출 부스 예약</h1>
-    <h4>이름과 전화번호를 적고 제출해주십시요. 입장 시간이 되기 10분 전에 연락 드리겠습니다</h4>
+    <h1>이름과 전화번호 입력</h1>
     <form id="contactForm">
         <label for="name">이름:</label>
         <input type="text" id="name" name="name" required>
@@ -27,10 +64,23 @@
         <button type="submit">제출</button>
     </form>
 
-    <h2>대기자 명단</h2>
+    <h2>입력된 목록</h2>
     <div id="contactList"></div>
 
+    <!-- 모달 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>삭제를 위해 비밀번호를 입력하세요:</p>
+            <input type="password" id="passwordInput" placeholder="비밀번호 입력">
+            <button id="confirmDelete">확인</button>
+        </div>
+    </div>
+
     <script>
+        const correctPassword = "a212fi97fks"; // 비밀번호
+        let entryToDelete = null; // 삭제할 항목
+
         document.getElementById('contactForm').addEventListener('submit', function(event) {
             event.preventDefault(); // 기본 제출 동작 방지
 
@@ -43,12 +93,48 @@
             contactEntry.className = 'entry';
             contactEntry.textContent = `이름: ${nameValue}, 전화번호: ${phoneValue}`;
 
+            // 삭제 버튼 생성
+            const deleteButton = document.createElement('span');
+            deleteButton.className = 'delete-button';
+            deleteButton.textContent = '삭제';
+            deleteButton.onclick = function() {
+                entryToDelete = contactEntry; // 삭제할 항목 저장
+                document.getElementById('myModal').style.display = "block"; // 모달 열기
+            };
+
+            // 삭제 버튼을 항목에 추가
+            contactEntry.appendChild(deleteButton);
+
             // 목록에 추가
             document.getElementById('contactList').appendChild(contactEntry);
 
             // 입력 필드 초기화
             document.getElementById('contactForm').reset();
         });
+
+        // 모달 닫기
+        document.querySelector('.close').onclick = function() {
+            document.getElementById('myModal').style.display = "none";
+        };
+
+        // 비밀번호 확인 후 삭제
+        document.getElementById('confirmDelete').onclick = function() {
+            const passwordValue = document.getElementById('passwordInput').value;
+            if (passwordValue === correctPassword) {
+                entryToDelete.remove(); // 항목 삭제
+                document.getElementById('myModal').style.display = "none"; // 모달 닫기
+                document.getElementById('passwordInput').value = ""; // 비밀번호 입력 초기화
+            } else {
+                alert("비밀번호가 틀렸습니다.");
+            }
+        };
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('myModal')) {
+                document.getElementById('myModal').style.display = "none";
+            }
+        };
     </script>
 </body>
 </html>
