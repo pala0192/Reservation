@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이름과 전화번호 입력</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .entry {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Q.E.D 방탈출 부스 예약</h1>
+    <h4>이름과 전화번호를 적고 제출해주십시요. 입장 시간이 되기 10분 전에 연락 드리겠습니다</h4>
+    <form id="contactForm">
+        <label for="name">이름:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <label for="phone">전화번호:</label>
+        <input type="text" id="phone" name="phone" required>
+        <br>
+        <button type="submit">제출</button>
+    </form>
+
+    <h2>대기자 명단</h2>
+    <div id="contactList"></div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // 기본 제출 동작 방지
+
+            // 입력값 가져오기
+            const nameValue = document.getElementById('name').value;
+            const phoneValue = document.getElementById('phone').value;
+
+            // 새로운 항목 생성
+            const contactEntry = document.createElement('div');
+            contactEntry.className = 'entry';
+            contactEntry.textContent = `이름: ${nameValue}, 전화번호: ${phoneValue}`;
+
+            // 목록에 추가
+            document.getElementById('contactList').appendChild(contactEntry);
+
+            // 입력 필드 초기화
+            document.getElementById('contactForm').reset();
+        });
+    </script>
+</body>
+</html>
